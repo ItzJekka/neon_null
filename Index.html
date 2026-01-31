@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neon Null - A Roguelike Journey Through the Cosmos</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --cosmic-purple: #6B4CE6;
+            --deep-space: #0a0a1f;
+            --nebula-pink: #FF3E9D;
+            --star-white: #E8F5FF;
+            --plasma-cyan: #00D9FF;
+            --void-black: #000000;
+            --stardust: #B8C5D6;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Rajdhani', sans-serif;
+            background: var(--void-black);
+            color: var(--star-white);
+            overflow-x: hidden;
+            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4" fill="%2300D9FF" opacity="0.6"/></svg>') 12 12, auto;
+        }
+
+        /* Animated galaxy background */
+        .galaxy-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: radial-gradient(ellipse at top, #1a0f3d 0%, #0a0a1f 50%, #000000 100%);
+        }
+
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 3s infinite;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.2); }
+        }
+
+        /* Floating geometric shapes */
+        .shape-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .floating-shape {
+            position: absolute;
+            opacity: 0.15;
+            animation: float 20s infinite ease-in-out;
+        }
+
+        .square {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--cosmic-purple), var(--nebula-pink));
+            border: 2px solid var(--plasma-cyan);
+            box-shadow: 0 0 40px var(--cosmic-purple);
+        }
+
+        .diamond {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--plasma-cyan), var(--cosmic-purple));
+            transform: rotate(45deg);
+            border: 2px solid var(--nebula-pink);
+            box-shadow: 0 0 40px var(--plasma-cyan);
+        }
+
+        .circle {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--nebula-pink), var(--plasma-cyan));
+            border-radius: 50%;
+            border: 2px solid var(--cosmic-purple);
+            box-shadow: 0 0 40px var(--nebula-pink);
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            25% { transform: translate(50px, 50px) rotate(90deg); }
+            50% { transform: translate(0, 100px) rotate(180deg); }
+            75% { transform: translate(-50px, 50px) rotate(270deg); }
+        }
+
+        /* Header */
+        header {
+            position: relative;
+            z-index: 10;
+            padding: 2rem 4rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(to bottom, rgba(10, 10, 31, 0.9), transparent);
+        }
+
+        .logo {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2rem;
+            font-weight: 900;
+            letter-spacing: 4px;
+            background: linear-gradient(135deg, var(--plasma-cyan), var(--nebula-pink));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 0 30px rgba(0, 217, 255, 0.5);
+            animation: pulse-glow 3s infinite;
+        }
+
+        @keyframes pulse-glow {
+            0%, 100% { filter: brightness(1); }
+            50% { filter: brightness(1.3); }
+        }
+
+        nav a {
+            color: var(--star-white);
+            text-decoration: none;
+            margin-left: 2rem;
+            font-weight: 600;
+            font-size: 1.1rem;
+            position: relative;
+            transition: color 0.3s;
+        }
+
+        nav a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--plasma-cyan), var(--nebula-pink));
+            transition: width 0.3s;
+        }
+
+        nav a:hover::after {
+            width: 100%;
+        }
+
+        /* Hero Section */
+        .hero {
+            position: relative;
+            z-index: 5;
+            min-height: 90vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 4rem 2rem;
+        }
+
+        .hero h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 6rem;
+            font-weight: 900;
+            letter-spacing: 8px;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--star-white), var(--plasma-cyan), var(--nebula-pink));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: title-entrance 1.5s ease-out;
+            text-shadow: 0 0 60px rgba(255, 62, 157, 0.5);
+        }
+
+        @keyframes title-entrance {
+            from {
+                opacity: 0;
+                transform: translateY(-50px) scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .hero .tagline {
+            font-size: 1.8rem;
+            font-weight: 300;
+            color: var(--stardust);
+            margin-bottom: 3rem;
+            letter-spacing: 2px;
+            animation: fade-in 2s ease-out 0.5s both;
+        }
+
+        @keyframes fade-in {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .release-date {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.3rem;
+            color: var(--plasma-cyan);
+            margin-bottom: 3rem;
+            padding: 1rem 2rem;
+            border: 2px solid var(--plasma-cyan);
+            border-radius: 50px;
+            background: rgba(0, 217, 255, 0.1);
+            box-shadow: 0 0 30px rgba(0, 217, 255, 0.3);
+            animation: fade-in 2s ease-out 1s both;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 2rem;
+            margin-top: 2rem;
+            animation: fade-in 2s ease-out 1.5s both;
+        }
+
+        .btn {
+            padding: 1.2rem 3rem;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 700;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--cosmic-purple), var(--nebula-pink));
+            color: white;
+            box-shadow: 0 10px 40px rgba(255, 62, 157, 0.4);
+        }
+
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn-primary:hover::before {
+            left: 100%;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 50px rgba(255, 62, 157, 0.6);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--plasma-cyan);
+            border: 2px solid var(--plasma-cyan);
+            box-shadow: 0 10px 40px rgba(0, 217, 255, 0.2);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(0, 217, 255, 0.1);
+            transform: translateY(-3px);
+            box-shadow: 0 15px 50px rgba(0, 217, 255, 0.4);
+        }
+
+        /* About Section */
+        .about {
+            position: relative;
+            z-index: 5;
+            padding: 8rem 4rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .about h2 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 4rem;
+            font-weight: 900;
+            text-align: center;
+            margin-bottom: 3rem;
+            background: linear-gradient(135deg, var(--plasma-cyan), var(--star-white));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .about-content {
+            background: rgba(10, 10, 31, 0.6);
+            border: 2px solid var(--cosmic-purple);
+            border-radius: 20px;
+            padding: 3rem;
+            box-shadow: 0 20px 60px rgba(107, 76, 230, 0.3);
+            backdrop-filter: blur(10px);
+        }
+
+        .about-content p {
+            font-size: 1.3rem;
+            line-height: 1.8;
+            color: var(--stardust);
+            margin-bottom: 1.5rem;
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .feature-card {
+            background: rgba(0, 217, 255, 0.05);
+            border: 1px solid var(--plasma-cyan);
+            border-radius: 15px;
+            padding: 2rem;
+            transition: all 0.3s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 217, 255, 0.3);
+            border-color: var(--nebula-pink);
+        }
+
+        .feature-card h3 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.5rem;
+            color: var(--plasma-cyan);
+            margin-bottom: 1rem;
+        }
+
+        .feature-card p {
+            font-size: 1.1rem;
+            color: var(--stardust);
+        }
+
+        /* Alpha Signup Section */
+        .alpha-signup {
+            position: relative;
+            z-index: 5;
+            padding: 8rem 4rem;
+            background: linear-gradient(to bottom, transparent, rgba(107, 76, 230, 0.1), transparent);
+        }
+
+        .alpha-container {
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .alpha-container h2 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 4rem;
+            font-weight: 900;
+            margin-bottom: 2rem;
+            background: linear-gradient(135deg, var(--nebula-pink), var(--cosmic-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .alpha-container p {
+            font-size: 1.3rem;
+            color: var(--stardust);
+            margin-bottom: 3rem;
+            line-height: 1.6;
+        }
+
+        .signup-form {
+            background: rgba(10, 10, 31, 0.8);
+            border: 2px solid var(--nebula-pink);
+            border-radius: 20px;
+            padding: 3rem;
+            box-shadow: 0 20px 60px rgba(255, 62, 157, 0.3);
+            backdrop-filter: blur(10px);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1rem;
+            color: var(--plasma-cyan);
+            margin-bottom: 0.5rem;
+            letter-spacing: 1px;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 1rem;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid var(--cosmic-purple);
+            border-radius: 10px;
+            color: var(--star-white);
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.1rem;
+            transition: all 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--plasma-cyan);
+            box-shadow: 0 0 20px rgba(0, 217, 255, 0.3);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .form-message {
+            padding: 1rem;
+            border-radius: 10px;
+            margin-top: 1rem;
+            display: none;
+        }
+
+        .form-message.success {
+            background: rgba(0, 217, 255, 0.2);
+            border: 1px solid var(--plasma-cyan);
+            color: var(--plasma-cyan);
+        }
+
+        .form-message.error {
+            background: rgba(255, 62, 157, 0.2);
+            border: 1px solid var(--nebula-pink);
+            color: var(--nebula-pink);
+        }
+
+        /* Footer */
+        footer {
+            position: relative;
+            z-index: 5;
+            text-align: center;
+            padding: 3rem 2rem;
+            background: linear-gradient(to top, rgba(10, 10, 31, 0.9), transparent);
+            margin-top: 4rem;
+        }
+
+        footer p {
+            color: var(--stardust);
+            font-size: 1rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 3rem;
+                letter-spacing: 4px;
+            }
+
+            .hero .tagline {
+                font-size: 1.2rem;
+            }
+
+            .cta-buttons {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .about h2,
+            .alpha-container h2 {
+                font-size: 2.5rem;
+            }
+
+            header {
+                padding: 1.5rem 2rem;
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            nav {
+                display: flex;
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            nav a {
+                margin-left: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Galaxy Background -->
+    <div class="galaxy-bg"></div>
+    <div class="stars" id="stars"></div>
+    
+    <!-- Floating Shapes -->
+    <div class="shape-container" id="shapes"></div>
+
+    <!-- Header -->
+    <header>
+        <div class="logo">Warsong Studios</div>
+        <nav>
+            <a href="#about">ABOUT</a>
+            <a href="#alpha">ALPHA TEST</a>
+            <a href="#steam">WISHLIST</a>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <h1>NEON NULL</h1>
+        <p class="tagline">Navigate the void. Master the shapes. Conquer the cosmos.</p>
+        <div class="release-date">LAUNCHING JULY 2026</div>
+        <div class="cta-buttons">
+            <a href="#steam" class="btn btn-primary">WISHLIST ON STEAM</a>
+            <a href="#alpha" class="btn btn-secondary">JOIN ALPHA TEST</a>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section class="about" id="about">
+        <h2>ABOUT THE GAME</h2>
+        <div class="about-content">
+            <p>
+                Embark on an interstellar roguelike adventure where geometry meets galactic warfare. Navigate through procedurally generated cosmic landscapes filled with hostile geometric entities: squares, diamonds, and circles, each with unique attack patterns and behaviors.
+            </p>
+            <p>
+                Every run is different. Every death teaches. Every victory feels earned. Collect cosmic fragments, unlock new abilities, and transform your ship into the ultimate shape-shifting weapon.
+            </p>
+            
+            <div class="features">
+                <div class="feature-card">
+                    <h3>◆ PROCEDURAL CHAOS</h3>
+                    <p>Infinite galaxies with unique geometric patterns and enemy configurations every playthrough.</p>
+                </div>
+                <div class="feature-card">
+                    <h3>■ SHAPE MASTERY</h3>
+                    <p>Battle and absorb the powers of squares, diamonds, and circles to evolve your abilities.</p>
+                </div>
+                <div class="feature-card">
+                    <h3>● COSMIC PROGRESSION</h3>
+                    <p>Permanent upgrades and unlockable ship modifications that persist between runs.</p>
+                </div>
+                <div class="feature-card">
+                    <h3>✦ STELLAR VISUALS</h3>
+                    <p>Mesmerizing particle effects and dynamic lighting in a vast, beautiful universe.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Alpha Signup Section -->
+    <section class="alpha-signup" id="alpha">
+        <div class="alpha-container">
+            <h2>JOIN THE ALPHA TEST</h2>
+            <p>
+                Be among the first to experience Neon Null. Alpha testers get exclusive early access, 
+                direct communication with the dev team, and a Steam key delivered straight to your inbox.
+            </p>
+            
+            <form class="signup-form" id="alphaForm">
+                <div class="form-group">
+                    <label for="name">NAME</label>
+                    <input type="text" id="name" name="name" required placeholder="Enter your name">
+                </div>
+                
+                <div class="form-group">
+                    <label for="email">EMAIL ADDRESS</label>
+                    <input type="email" id="email" name="email" required placeholder="your.email@example.com">
+                </div>
+                
+                <div class="form-group">
+                    <label for="experience">GAMING EXPERIENCE (OPTIONAL)</label>
+                    <textarea id="experience" name="experience" placeholder="Tell us about your experience with roguelikes or why you're excited to test..."></textarea>
+                </div>
+                
+                <button type="submit" class="btn btn-primary" style="width: 100%;">SIGN UP FOR ALPHA</button>
+                
+                <div class="form-message" id="formMessage"></div>
+            </form>
+        </div>
+    </section>
+
+    <!-- Steam Section -->
+    <section class="about" id="steam">
+        <h2>WISHLIST NOW</h2>
+        <div class="about-content" style="text-align: center;">
+            <p style="margin-bottom: 2rem;">
+                Add Celestial Chaos to your Steam wishlist and be notified the moment we launch in July 2026. 
+                Your wishlist helps us tremendously and shows your support for indie game development!
+            </p>
+            <a href="https://store.steampowered.com/app/YOUR_STEAM_APP_ID" class="btn btn-primary" target="_blank">
+                WISHLIST ON STEAM
+            </a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2026 Warsong Studios. All rights reserved. | Developed with ❤️ for roguelike enthusiasts</p>
+    </footer>
+
+    <script>
+        // Generate stars
+        function createStars() {
+            const starsContainer = document.getElementById('stars');
+            const starCount = 200;
+            
+            for (let i = 0; i < starCount; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.width = Math.random() * 3 + 'px';
+                star.style.height = star.style.width;
+                star.style.animationDelay = Math.random() * 3 + 's';
+                starsContainer.appendChild(star);
+            }
+        }
+
+        // Generate floating shapes
+        function createShapes() {
+            const shapesContainer = document.getElementById('shapes');
+            const shapes = ['square', 'diamond', 'circle'];
+            const shapeCount = 15;
+            
+            for (let i = 0; i < shapeCount; i++) {
+                const shapeDiv = document.createElement('div');
+                shapeDiv.className = `floating-shape ${shapes[Math.floor(Math.random() * shapes.length)]}`;
+                shapeDiv.style.left = Math.random() * 100 + '%';
+                shapeDiv.style.top = Math.random() * 100 + '%';
+                shapeDiv.style.animationDuration = (Math.random() * 10 + 15) + 's';
+                shapeDiv.style.animationDelay = Math.random() * 5 + 's';
+                shapesContainer.appendChild(shapeDiv);
+            }
+        }
+
+        // Initialize
+        createStars();
+        createShapes();
+
+        // Alpha Form Handler
+        document.getElementById('alphaForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const formMessage = document.getElementById('formMessage');
+            const submitBtn = e.target.querySelector('button[type="submit"]');
+            const originalBtnText = submitBtn.textContent;
+            
+            // Disable button and show loading
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'SUBMITTING...';
+            formMessage.style.display = 'none';
+            
+            const formData = {
+                name: document.getElementById('name').value,
+                email: document.getElementById('email').value,
+                experience: document.getElementById('experience').value,
+                timestamp: new Date().toISOString()
+            };
+            
+            try {
+                // Send email using your backend
+                const response = await fetch('/api/alpha-signup', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(formData)
+                });
+                
+                if (response.ok) {
+                    formMessage.className = 'form-message success';
+                    formMessage.textContent = '✓ SUCCESS! Check your email for your welcome message and Steam key.';
+                    formMessage.style.display = 'block';
+                    e.target.reset();
+                } else {
+                    throw new Error('Signup failed');
+                }
+            } catch (error) {
+                formMessage.className = 'form-message error';
+                formMessage.textContent = '✗ Something went wrong. Please try again or contact us directly.';
+                formMessage.style.display = 'block';
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = originalBtnText;
+            }
+        });
+
+        // Smooth scrolling
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
