@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Neon Null - A Roguelike Journey Through the Cosmos</title>
+    <!--<script src="https://www.google.com/recaptcha/enterprise.js?render=6LerqV8sAAAAAI7XRbu5MiU5m_2IGgp0GyOzNg9Z"></script>-->
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -605,18 +606,15 @@
         </div>
     </section>
     <!--reCAPATCHA-->
-    <script>
-        function onClick(e) {
-            e.preventDefault();
-            grecaptcha.enterprise.ready(async () => {
-            const token = await grecaptcha.enterprise.execute('6LerqV8sAAAAAI7XRbu5MiU5m_2IGgp0GyOzNg9Z', {action: 'LOGIN'});
-    // IMPORTANT: The 'token' that results from execute is an encrypted response sent by
-    // reCAPTCHA to the end user's browser.
-    // This token must be validated by creating an assessment.
-    // See https://cloud.google.com/recaptcha/docs/create-assessment
-  });
-}
-</script>
+    <!--<script>
+        function onSubmit(token) {
+        document.getElementById("alphaForm").submit();
+   } // Use `requestSubmit()` for extra features like browser input validation.
+   <button class="g-recaptcha"
+    data-sitekey="6LerqV8sAAAAAI7XRbu5MiU5m_2IGgp0GyOzNg9Z"
+    data-callback="onSubmit"
+    data-action="submit">Submit</button>
+</script>-->
 
     <!-- Steam Section -->
     <section class="about" id="steam">
